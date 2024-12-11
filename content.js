@@ -1,21 +1,33 @@
-// content.js
+document.addEventListener('click', async (event) => {
+  event.preventDefault();
+  
+  // Find the clicked element
+  const target = event.target;
 
-// Find all images on the page and return their src URLs
-function getImageUrls() {
-  const images = document.querySelectorAll('img');
-  const imageUrls = [];
-  images.forEach((img) => {
-    const src = img.src;
-    if (src) {
-      imageUrls.push(src);
+  // Traverse upwards to find the nearest `img` or element with `src`
+  let srcElement = null;
+  let parent = target;
+
+  while (parent) {
+    if (parent.tagName === 'IMG' || parent.getAttribute('src')) {
+      srcElement = parent;
+      break;
     }
-  });
-  return imageUrls;
-}
+    parent = parent.parentElement;
+  }
 
-// Send message back to popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'getImages') {
-    sendResponse({ images: getImageUrls() });
+  if (srcElement) {
+    const src = srcElement.getAttribute('src');
+
+    if (src) {
+      console.log('Image URL:', src);
+
+      // Send the image src to the background script to trigger a download
+      chrome.runtime.sendMessage({ action: 'downloadImage', imageUrl: src });
+    } else {
+      console.log('No image source found.');
+    }
+  } else {
+    console.log('No image element found.');
   }
 });
