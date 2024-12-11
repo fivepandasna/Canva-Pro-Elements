@@ -1,28 +1,32 @@
 {
   "manifest_version": 3,
   "name": "Canva Pro Elements",
-  "version": "0.1",
+  "version": "0.2",
+  "description": "Download specific images on click",
   "permissions": [
-    "activeTab",  // Permission to access the currently active tab
-    "tabs",
-    "storage"
+    "activeTab",
+    "scripting",
+    "downloads"
   ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],  // This applies to all pages
-      "js": ["content.js"]  // Content script to find images
+      "matches": ["https://*/*"],
+      "js": ["content.js"]
     }
   ],
   "action": {
-    "default_popup": "popup.html",  // The popup HTML
+    "default_popup": "popup.html",
     "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
     }
-  },
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ]
+  }
 }
